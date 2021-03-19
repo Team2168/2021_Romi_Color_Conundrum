@@ -23,7 +23,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
 
 public class PathConverter {
-  static DifferentialDriveVoltageConstraint autoVoltageConstraint =
+  DifferentialDriveVoltageConstraint autoVoltageConstraint =
         new DifferentialDriveVoltageConstraint(
             new SimpleMotorFeedforward(DriveConstants.ksVolts, 
                                        DriveConstants.kvVoltSecondsPerMeter, 
@@ -31,7 +31,7 @@ public class PathConverter {
             DriveConstants.kDriveKinematics,
             10);
 
-  static TrajectoryConfig config =
+  TrajectoryConfig config =
         new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond, 
                              AutoConstants.kMaxAccelerationMetersPerSecondSquared)
             .setKinematics(DriveConstants.kDriveKinematics)
@@ -39,11 +39,11 @@ public class PathConverter {
 
   Drivetrain m_drivetrain;
 
-  PathConverter(Drivetrain drivetrain) {
+  public PathConverter(Drivetrain drivetrain) {
     m_drivetrain = drivetrain;
   }
 
-  public static RamseteCommand convertPaths(String fileName) {
+  public RamseteCommand convertPaths(String fileName) {
     Trajectory trajectory;
     String trajectoryJSON = fileName;
     try {
@@ -51,26 +51,21 @@ public class PathConverter {
       trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
     } catch (IOException ex) {
       DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-      trajectory = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(0, 0, new Rotation2d(0)),
-        List.of(
-          new Translation2d(0, 0)
-        ),
-        new Pose2d(0, 0, new Rotation2d(0)),
-      config);
+      trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)),
+          List.of(new Translation2d(0, 0)), new Pose2d(0, 0, new Rotation2d(0)), config);
     }
-    PathRamseteCommand = new RamseteCommand(
-      trajectory,
+    RamseteCommand PathRamseteCommand = new RamseteCommand(
+      trajectory, 
       m_drivetrain::getPose,
-        new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-        new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter, DriveConstants.kaVoltSecondsSquaredPerMeter),
-        DriveConstants.kDriveKinematics,
-        m_drivetrain::getWheelSpeeds,
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        m_drivetrain::tankDriveVolts,
-        m_drivetrain);
-    return trajectory;
-}
+      new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+      new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter, DriveConstants.kaVoltSecondsSquaredPerMeter),
+      DriveConstants.kDriveKinematics,
+      m_drivetrain::getWheelSpeeds,
+      new PIDController(DriveConstants.kPDriveVel, 0, 0),
+      new PIDController(DriveConstants.kPDriveVel, 0, 0),
+      m_drivetrain::tankDriveVolts,
+      m_drivetrain);
+    return PathRamseteCommand;
+  }
 
-}}
+}
