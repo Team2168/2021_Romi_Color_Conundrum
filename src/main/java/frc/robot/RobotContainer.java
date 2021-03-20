@@ -74,7 +74,7 @@ public class RobotContainer {
         .whenInactive(new PrintCommand("Button A Released"));
 
     // Setup SmartDashboard options
-    m_chooser.setDefaultOption("Ramsete Trajectory", new PathConverter(m_drivetrain).convertPaths("output/Course1.wpilib.json"));
+    m_chooser.setDefaultOption("Ramsete Trajectory", new PathConverter(m_drivetrain).convertPaths("output/Unnamed.wpilib.json"));
     m_chooser.addOption("Auto Routine Distance", new AutonomousDistance(m_drivetrain));
     m_chooser.addOption("Auto Routine Time", new AutonomousTime(m_drivetrain));
     

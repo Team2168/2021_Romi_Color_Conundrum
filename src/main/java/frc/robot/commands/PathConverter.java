@@ -17,10 +17,12 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class PathConverter {
   DifferentialDriveVoltageConstraint autoVoltageConstraint =
@@ -43,7 +45,7 @@ public class PathConverter {
     m_drivetrain = drivetrain;
   }
 
-  public RamseteCommand convertPaths(String fileName) {
+  public Command convertPaths(String fileName) {
     Trajectory trajectory;
     String trajectoryJSON = fileName;
     try {
@@ -54,7 +56,7 @@ public class PathConverter {
       trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)),
           List.of(new Translation2d(0, 0)), new Pose2d(0, 0, new Rotation2d(0)), config);
     }
-    RamseteCommand PathRamseteCommand = new RamseteCommand(
+    RamseteCommand pathRamseteCommand = new RamseteCommand(
       trajectory, 
       m_drivetrain::getPose,
       new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
@@ -65,7 +67,8 @@ public class PathConverter {
       new PIDController(DriveConstants.kPDriveVel, 0, 0),
       m_drivetrain::tankDriveVolts,
       m_drivetrain);
-    return PathRamseteCommand;
+    return new SequentialCommandGroup(new ZeroAllTheThings(m_drivetrain),
+    pathRamseteCommand);
   }
 
 }
