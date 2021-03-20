@@ -18,11 +18,11 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class PathConverter {
   DifferentialDriveVoltageConstraint autoVoltageConstraint =
@@ -40,13 +40,15 @@ public class PathConverter {
             .addConstraint(autoVoltageConstraint);
 
   Drivetrain m_drivetrain;
+  Trajectory trajectory;
+  RamseteCommand pathRamseteCommand;
 
-  public PathConverter(Drivetrain drivetrain) {
+  public PathConverter(Drivetrain drivetrain, String fileName) {
     m_drivetrain = drivetrain;
+    convertPaths(fileName);
   }
 
-  public Command convertPaths(String fileName) {
-    Trajectory trajectory;
+  private void convertPaths(String fileName) {
     String trajectoryJSON = fileName;
     try {
       Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
@@ -56,7 +58,7 @@ public class PathConverter {
       trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)),
           List.of(new Translation2d(0, 0)), new Pose2d(0, 0, new Rotation2d(0)), config);
     }
-    RamseteCommand pathRamseteCommand = new RamseteCommand(
+    pathRamseteCommand = new RamseteCommand(
       trajectory, 
       m_drivetrain::getPose,
       new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
@@ -67,8 +69,15 @@ public class PathConverter {
       new PIDController(DriveConstants.kPDriveVel, 0, 0),
       m_drivetrain::tankDriveVolts,
       m_drivetrain);
-    return new SequentialCommandGroup(new ZeroAllTheThings(m_drivetrain),
-    pathRamseteCommand);
+  }
+
+  public Command getCommand() {
+    //tell the robot that is at the initial position in the path
+    return new InstantCommand(() -> m_drivetrain.resetOdometry(trajectory.getInitialPose()), m_drivetrain)
+      // drive through the waypoints in the path 
+      .andThen(pathRamseteCommand)
+      //stop driving
+      .andThen(new InstantCommand(() -> m_drivetrain.tankDriveVolts(0, 0), m_drivetrain));
   }
 
 }
