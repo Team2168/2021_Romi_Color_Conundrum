@@ -77,7 +77,7 @@ public class RobotContainer {
         .whenInactive(new PrintCommand("Button A Released"));
     gyroResetButton.whenPressed(new ZeroAllTheThings(m_drivetrain));
     // Setup SmartDashboard options
-    m_chooser.setDefaultOption("Ramsete Trajectory", new PathConverter(m_drivetrain).convertPaths("output/Unnamed.wpilib.json"));
+    m_chooser.setDefaultOption("Ramsete Trajectory", new PathConverter(m_drivetrain, "output/Unnamed.wpilib.json").getCommand());
     m_chooser.addOption("Auto Routine Distance", new AutonomousDistance(m_drivetrain));
     m_chooser.addOption("Auto Routine Time", new AutonomousTime(m_drivetrain));
     
