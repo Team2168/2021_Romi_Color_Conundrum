@@ -5,5 +5,5 @@
   "maxAcceleration": 0.6,
   "wheelBase": 0.138,
   "gameName": "Color Conundrum",
-  "outputDir": "../../../../../2021_Romi_Color_Conundrum/src/main/deploy/Course2"
+  "outputDir": "../src/main/deploy"
 }
