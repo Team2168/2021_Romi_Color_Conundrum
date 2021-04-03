@@ -162,6 +162,9 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("heading", getGyroAngleZ());
     // Also update the Field2D object (so that we can visualize this in sim)
     m_field2d.setRobotPose(getPose());
+
+    SmartDashboard.putNumber("leftSpeed", m_leftEncoder.getRate());
+    SmartDashboard.putNumber("rightSpeed", m_rightEncoder.getRate());
   }
 
   /**
