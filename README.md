@@ -6,8 +6,12 @@ Repo to store our code for the [Color Conundrum](https://wpilib.org/blog/bae-sys
 ![](https://images.squarespace-cdn.com/content/v1/5d4b06a67cd3580001ded283/1614822955279-NSN404I6Q9NCP2WEUQ90/ke17ZwdGBToddI8pDm48kOqYnsiUDjsZaJqFDGXMr4gUqsxRUqqbr1mOJYKfIPR7LoDQ9mXPOjoJoqy81S2I8N_N4V1vUb5AoIIIbLZhVYy7Mythp_T-mtop-vrsUOmeInPi9iDjx9w8K4ZfjXt2doVXUrDOVQ_2ZtxCciDuvb26pkjsECF95UiDEciaBHtjCjLISwBs8eEdxAxTptZAUg/Course+2%400.25x.png?format=1500w)
 
 Submission videos:
-* Teleop: _TODO_
-* Auto: _TODO_
+* Course 1:
+  * Teleop: https://youtu.be/79blbwKbnME
+  * Auto: https://youtu.be/H4pM9PvBJuQ
+* Course 2:
+  * Teleop: https://youtu.be/OzovSQ5It_c
+  * Auto: https://youtu.be/7vbJFiUlrao
 
 # Documentation
 
